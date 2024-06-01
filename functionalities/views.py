@@ -77,7 +77,7 @@ class FriendRequestsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 class FriendsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    serializer_class = FriendsSerializer
+    serializer_class = CustomUserSerializer
     permission_classes = [permissions.IsAuthenticated]
     
 
@@ -85,4 +85,4 @@ class FriendsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         user = self.request.user
         friends = Friends.objects.filter(Q(user1=user) | Q(user2=user))
         friend_ids = [f.user1.id if f.user2 == user else f.user2.id for f in friends]
-        return Friends.objects.filter(id__in=friend_ids)
+        return CustomUser.objects.filter(id__in=friend_ids)
