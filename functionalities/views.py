@@ -1,5 +1,4 @@
 from rest_framework import viewsets, mixins, permissions, status
-from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q
 from rest_framework.throttling import UserRateThrottle
@@ -12,10 +11,11 @@ class UserViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [permissions.IsAuthenticated]
+    
 
     def get_queryset(self):
         keyword = self.request.query_params.get('search', '')
-        return CustomUser.objects.filter(Q(email__iexact=keyword) | Q(name__icontains=keyword)).distinct()
+        return CustomUser.objects.filter(Q(email__iexact=keyword) | Q(username__icontains=keyword)).distinct()
 
 class FriendRequestThrottle(UserRateThrottle):
     rate = '3/min'
@@ -25,6 +25,7 @@ class FriendRequestsViewSet(viewsets.ModelViewSet):
     serializer_class = FriendRequestsSerializer
     permission_classes = [permissions.IsAuthenticated]
     throttle_classes = [FriendRequestThrottle]
+    
     http_method_names = ['get', 'post', 'patch', 'delete']
 
     def create(self, request, *args, **kwargs):
@@ -76,11 +77,12 @@ class FriendRequestsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 class FriendsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    serializer_class = CustomUserSerializer
+    serializer_class = FriendsSerializer
     permission_classes = [permissions.IsAuthenticated]
+    
 
     def get_queryset(self):
         user = self.request.user
         friends = Friends.objects.filter(Q(user1=user) | Q(user2=user))
         friend_ids = [f.user1.id if f.user2 == user else f.user2.id for f in friends]
-        return CustomUser.objects.filter(id__in=friend_ids)
+        return Friends.objects.filter(id__in=friend_ids)

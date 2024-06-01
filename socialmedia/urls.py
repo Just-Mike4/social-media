@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from users.views import RegisterationViewSet,LoginViewSet
+from users.views import RegisterationViewSet,LoginViewSet,RefreshViewset
 from functionalities.views import FriendRequestsViewSet,FriendsViewSet,UserViewSet
 from rest_framework.routers import DefaultRouter
 
@@ -27,6 +27,7 @@ router.register(r'auth/login',LoginViewSet,basename='auth-login')
 router.register(r'user-search', UserViewSet, basename='user-search')
 router.register(r'friendrequests', FriendRequestsViewSet, basename='friend-requests')
 router.register(r'friends', FriendsViewSet, basename='friends')
+router.register(r'auth/refresh',RefreshViewset,basename='auth-refresh')
 
 
 urlpatterns = [
