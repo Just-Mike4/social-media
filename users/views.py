@@ -6,14 +6,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 
-
-class CustomUserViewSet(viewsets.ModelViewSet):
-    serializer_class = CustomUserSerializer
-    permission_classes = (IsAuthenticated,)
-    http_method_names = ['get','patch']
-    
-    def get_queryset(self):
-        return CustomUser.objects.all(id=self.request.user.id)
     
 class RegisterationViewSet(viewsets.ModelViewSet):
     serializer_class = RegisterationSerializer
