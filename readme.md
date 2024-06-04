@@ -34,10 +34,13 @@ This is an API for social networking application built using Django Rest Framewo
 Explore and interact with the application through the API, providing easy access to various functionalities.
 - **Register User Endpoint:** `/api/auth/register` (Method: POST)
 - **User Login Endpoint:** `/api/auth/login` (Method: POST)
-- **User Search Endpoint:**  `/api/user-search/`
-- **Friend Request Endpoint:**  `/api/friendrequests/`
-- **Friends List Endpoint:**  `/api/friends/`
-- **Refresh Token Endpoint:**  `/api/auth/refresh/`
+- **Refresh Token Endpoint:**  `/api/auth/refresh` (Method: POST)
+- **User Search Endpoint:**  `/api/user-search` (Method: GET)
+- **Friends List Endpoint:**  `/api/friends` (Method: GET)
+- **Friend Request Endpoint:**  `/api/friendrequests` (Methods: GET, POST, PATCH)
+
+
+
 
 The API documentation is available at the following endpoints:
 
@@ -59,10 +62,6 @@ The API documentation is available at the following endpoints:
         {
             "refresh": "",
             "access": "",
-            "user": {
-                "username": "",
-                "email": ""
-            }
         }
     ```
 
@@ -87,3 +86,138 @@ The API documentation is available at the following endpoints:
             }
         }
     ```
+
+- **Refresh Token:**
+    - Endpoint: `/api/auth/refresh`
+    - Method: `POST`
+    - Request Body:
+        ```json
+        {
+            "refresh": "",
+        }
+        ```
+
+    - Response Body: 
+    ```json
+        {
+            "access": "",
+        }
+        ```
+- **User Search:**
+    - Endpoint: `/api/friends`
+    - Method: `GET`
+    - Request Query Params:
+        ```json
+        {
+            "search": "" 
+        }
+        ```
+
+    - Response Body:
+        ``` json
+            [
+        {
+            "username": "friend1",
+            "email": "friend1@gmail.com"
+        },
+        {
+            "username": "friend2",
+            "email": "friend2@gmail.com"
+        }
+            ]
+        ```
+
+        
+- **Friends List:**
+    - Endpoint: `/api/friends`
+    - Method: `GET`
+    - Response Body:
+        ``` json
+            [
+        {
+            "username": "friend1",
+            "email": "friend1@gmail.com"
+        },
+        {
+            "username": "friend2",
+            "email": "friend2@gmail.com"
+        }
+            ]
+        ```
+
+- **Friend Request:**
+    - Endpoint: `/api/friendrequests`
+    - Method: `GET`
+    - Response Body:
+        ``` json
+            [
+                {
+                    "id": "",
+                    "from_user": {
+                        "username": "",
+                        "email": ""
+                    },
+                    "to_user": {
+                        "username": "",
+                        "email": ""
+                    },
+                    "status": "accepted",
+                    "timestamp": ""
+                }
+            ]
+        ```
+
+
+    - Endpoint: `/api/friendrequests`
+    - Method: `POST`
+    - Request Body:
+        ```json
+        {
+            "to_username": "",
+        }
+        ```
+
+    - Response Body:
+    
+        ``` json
+            {
+                "id": "",
+                "from_user": {
+                    "username": "",
+                    "email": ""
+                },
+                "to_user": {
+                    "username": "",
+                    "email": ""
+                },
+                "status": "pending",
+                "timestamp": ""
+            }
+        ```
+
+
+    - Endpoint: `/api/friendrequests/<friend_request_id>`
+    - Method: `PATCH`
+    - Request Body:
+        ```json
+        {
+            "action": "",
+        }
+        ```
+    - Response Body:
+        ``` json
+            {
+                "id": "",
+                "from_user": {
+                    "username": "",
+                    "email": ""
+                },
+                "to_user": {
+                    "username": "",
+                    "email": ""
+                },
+                "status": "accepted",
+                "timestamp": ""
+            }
+        ```
+

@@ -11,6 +11,7 @@ class UserViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ['get']
     
 
     def get_queryset(self):
@@ -21,17 +22,16 @@ class FriendRequestThrottle(UserRateThrottle):
     rate = '3/min'
 
 class FriendRequestsViewSet(viewsets.ModelViewSet):
-    queryset = FriendRequests.objects.all()
     serializer_class = FriendRequestsSerializer
     permission_classes = [permissions.IsAuthenticated]
     throttle_classes = [FriendRequestThrottle]
-    
-    http_method_names = ['get', 'post', 'patch', 'delete']
+    http_method_names = ['get', 'post', 'patch']
 
     def create(self, request, *args, **kwargs):
-        to_user_id = request.data.get('to_user_id')
+        to_username = request.data.get('to_username')
+
         try:
-            to_user = CustomUser.objects.get(id=to_user_id)
+            to_user = CustomUser.objects.get(username=to_username)
         except CustomUser.DoesNotExist:
             return Response({"detail": "CustomUser not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -61,24 +61,26 @@ class FriendRequestsViewSet(viewsets.ModelViewSet):
 
         friend_request.save()
         return Response(FriendRequestsSerializer(friend_request).data)
+    
+    def get_queryset(self):
+        queryset = FriendRequests.objects.filter(to_user=self.request.user)
+        return queryset
 
     def list(self, request, *args, **kwargs):
-        if 'pending' in request.query_params:
-            queryset = FriendRequests.objects.filter(to_user=request.user, status='pending')
-        else:
-            queryset = self.filter_queryset(self.get_queryset())
+        queryset = self.filter_queryset(self.get_queryset())
 
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_paginated_response(FriendRequestsSerializer(page, many=True).data)
-        else:
-            serializer = FriendRequestsSerializer(queryset, many=True)
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
 class FriendsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = CustomUserSerializer
     permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ['get']
     
 
     def get_queryset(self):
