@@ -204,6 +204,7 @@ The API documentation is available at the following endpoints:
             "action": "",
         }
         ```
+        
     - Response Body:
         ``` json
             {
