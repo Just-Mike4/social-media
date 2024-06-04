@@ -40,7 +40,7 @@ class LoginViewSet(viewsets.ModelViewSet):
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 class RefreshViewset(viewsets.ViewSet,TokenRefreshView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     http_method_names = ('post')
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
