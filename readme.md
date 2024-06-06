@@ -102,7 +102,7 @@ The API documentation is available at the following endpoints:
         {
             "access": "",
         }
-        ```
+    ```
 - **User Search:**
     - Endpoint: `/api/friends`
     - Method: `GET`
